@@ -5,19 +5,28 @@
     state: present
 
 - name: load ipmi kernel modules
-  modprobe: name={{ item }} state=present
+  modprobe:
+    name: "{{ item }}"
+    state: present
   loop: "{{ impi_kernel_modules }}"
 
 - name: create directory for ansible custom facts
-  file: state=directory recurse=yes path=/etc/ansible/facts.d
+  file:
+    state: directory
+    recurse: yes
+    path: /etc/ansible/facts.d
 
 - name: install custom impi fact
-  template: src=ipmi.fact.j2 dest=/etc/ansible/facts.d/ipmi.fact mode=0755
+  template:
+    src: "ipmi.fact.j2"
+    dest: "/etc/ansible/facts.d/ipmi.fact"
+    mode: 0755
   register: config_status
 
 - name: re-gather facts using sudo for ipmitool
   # NOTE: setup module returns empty ipmi section unless it runs as root
-  setup: filter=ansible_local
+  setup:
+    filter: ansible_local
   when: config_status is changed or not ansible_local.ipmi.lan_1
 
 - name: create local host_vars directory
