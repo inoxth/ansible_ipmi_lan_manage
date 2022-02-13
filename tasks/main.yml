@@ -59,6 +59,9 @@
 ## only if set_ipmi == True and ipmi host_var exists
 - debug: msg="vlan match={{ ansible_local.ipmi.lan_1.qvlanid == ipmi.vlan or ( ansible_local.ipmi.lan_1.qvlanid == 'Disabled' and ipmi.vlan == 0 ) }} current={{ ansible_local.ipmi.lan_1.qvlanid }} new={{ ipmi.vlan }}"
   when: ipmi is defined
+  changed_when: ipmi is defined and
+        not ( ansible_local.ipmi.lan_1.qvlanid == ipmi.vlan or
+        ( ansible_local.ipmi.lan_1.qvlanid == 'Disabled' and ipmi.vlan == 0 ))
 - name: set ipmi vlan
   command: ipmitool lan set {{ lan_channel }} vlan id "{% if ipmi.vlan == 0 %}off{% else %}{{ ipmi.vlan }}{% endif %}"
   when: set_ipmi and ipmi is defined and
@@ -67,6 +70,8 @@
 
 - debug: msg="ipsource match={{ ansible_local.ipmi.lan_1.ipaddresssource == ipmi.address_source }} current={{ ansible_local.ipmi.lan_1.ipaddresssource }} new={{ ipmi.address_source }}"
   when: ipmi is defined
+  changed_when: ipmi is defined and
+        ansible_local.ipmi.lan_1.ipaddresssource != ipmi.address_source
 - name: set ipmi address source
   command: ipmitool lan set {{ lan_channel }} ipsrc "{{ 'static' if ipmi.address_source|lower == "staticaddress" else 'dhcp' }}"
   when: set_ipmi and ipmi is defined and
@@ -74,6 +79,8 @@
 
 - debug: msg="ipaddr match={{ ansible_local.ipmi.lan_1.ipaddress == ipmi.address }} current={{ ansible_local.ipmi.lan_1.ipaddress }} new={{ ipmi.address }}"
   when: ipmi is defined
+  changed_when: ipmi is defined and
+        ansible_local.ipmi.lan_1.ipaddress != ipmi.address
 - name: set ipmi address
   command: ipmitool lan set {{ lan_channel }} ipaddr "{{ ipmi.address }}"
   when: set_ipmi and ipmi is defined and
@@ -81,6 +88,8 @@
 
 - debug: msg="ipaddr match={{ ansible_local.ipmi.lan_1.ipaddress == ipmi.address }} current={{ ansible_local.ipmi.lan_1.ipaddress }} new={{ ipmi.address }}"
   when: ipmi is defined
+  changed_when: ipmi is defined and
+        ansible_local.ipmi.lan_1.ipaddress != ipmi.address
 - name: set ipmi address
   command: ipmitool lan set {{ lan_channel }} ipaddr "{{ ipmi.address }}"
   when: set_ipmi and ipmi is defined and
@@ -88,6 +97,8 @@
 
 - debug: msg="netmask match={{ ansible_local.ipmi.lan_1.subnetmask == ipmi.netmask }} current={{ ansible_local.ipmi.lan_1.subnetmask }} new={{ ipmi.netmask }}"
   when: ipmi is defined
+  changed_when: ipmi is defined and
+        ansible_local.ipmi.lan_1.subnetmask != ipmi.netmask
 - name: set ipmi netmask
   command: ipmitool lan set {{ lan_channel }} netmask "{{ ipmi.netmask }}"
   when: set_ipmi and ipmi is defined and
@@ -95,6 +106,8 @@
 
 - debug: msg="gateway match={{ ansible_local.ipmi.lan_1.defaultgatewayip == ipmi.gw }} current={{ ansible_local.ipmi.lan_1.defaultgatewayip }} new={{ ipmi.gw }}"
   when: ipmi is defined
+  changed_when: ipmi is defined and
+        ansible_local.ipmi.lan_1.defaultgatewayip != ipmi.gw
 - name: set ipmi gateway
   command: ipmitool lan set {{ lan_channel }} defgw ipaddr "{{ ipmi.gw }}"
   when: set_ipmi and ipmi is defined and
