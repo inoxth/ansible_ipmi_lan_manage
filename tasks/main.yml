@@ -86,15 +86,6 @@
   when: set_ipmi and ipmi is defined and
         ansible_local.ipmi.lan_1.ipaddress != ipmi.address
 
-- debug: msg="ipaddr match={{ ansible_local.ipmi.lan_1.ipaddress == ipmi.address }} current={{ ansible_local.ipmi.lan_1.ipaddress }} new={{ ipmi.address }}"
-  when: ipmi is defined
-  changed_when: ipmi is defined and
-        ansible_local.ipmi.lan_1.ipaddress != ipmi.address
-- name: set ipmi address
-  command: ipmitool lan set {{ lan_channel }} ipaddr "{{ ipmi.address }}"
-  when: set_ipmi and ipmi is defined and
-        ansible_local.ipmi.lan_1.ipaddress != ipmi.address
-
 - debug: msg="netmask match={{ ansible_local.ipmi.lan_1.subnetmask == ipmi.netmask }} current={{ ansible_local.ipmi.lan_1.subnetmask }} new={{ ipmi.netmask }}"
   when: ipmi is defined
   changed_when: ipmi is defined and
