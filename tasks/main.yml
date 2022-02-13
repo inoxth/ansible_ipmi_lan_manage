@@ -1,11 +1,8 @@
 ---
 - name: install ipmitool
-  apt: pkg=ipmitool state=present
-  when: ansible_pkg_mgr=="apt"
-
-- name: install ipmitool
-  yum: pkg=ipmitool state=present
-  when: ansible_pkg_mgr=="yum"
+  package:
+    name: ipmitool
+    state: present
 
 - name: load ipmi kernel modules
   modprobe: name={{ item }} state=present
